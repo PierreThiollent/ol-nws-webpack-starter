@@ -19,6 +19,13 @@ import {Circle as CircleStyle, Fill, Stroke, Style, Text} from 'ol/style';
 // Coordonnées NWS
 var nws = transform([1.06653, 49.42847], 'EPSG:4326', 'EPSG:3857');
 
+/**
+ * Popup
+ */
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
 // On definit la forme du marqueur
 var image = new CircleStyle({
   radius: 5,
