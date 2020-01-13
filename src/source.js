@@ -1,6 +1,7 @@
 import './source.scss';
 import 'ol/ol.css';
 import Map from 'ol/Map';
+import {geojsonObject} from './geoJson';
 import Overlay from 'ol/Overlay';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
@@ -8,23 +9,15 @@ import {
   defaults as defaultInteractions,
   DragRotateAndZoom,
 } from 'ol/interaction';
+import {transform} from 'ol/proj';
 import Circle from 'ol/geom/Circle';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 import {OSM, Vector as VectorSource} from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
-import {transform} from 'ol/proj';
 import {Circle as CircleStyle, Fill, Stroke, Style, Text} from 'ol/style';
 
-// Coordonnées Seine Innopolis
+// Coordonnées NWS
 var nws = transform([1.06653, 49.42847], 'EPSG:4326', 'EPSG:3857');
-// Coordonnées des copeaux numériques
-var copeauxNumeriques = transform(
-  [1.06467, 49.42222],
-  'EPSG:4326',
-  'EPSG:3857',
-);
-// Coordonnées de l'ISD
-var ISDFlaubert = transform([1.12029, 49.45093], 'EPSG:4326', 'EPSG:3857');
 
 // On definit la forme du marqueur
 var image = new CircleStyle({
@@ -63,54 +56,6 @@ var highlightStyle = feature =>
   });
 
 const styleFunction = feature => styles[feature.getGeometry().getType()];
-
-/**
- * GeoJSON Object
- */
-var geojsonObject = {
-  type: 'FeatureCollection',
-  crs: {
-    type: 'name',
-    properties: {
-      name: 'EPSG:3857',
-    },
-  },
-  features: [
-    {
-      type: 'Feature',
-      properties: {
-        name: 'Normandie Web School',
-        description: 'La meilleure école du numérique',
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: nws,
-      },
-    },
-    {
-      type: 'Feature',
-      properties: {
-        name: 'Les copeaux numériques',
-        description: 'FabLab',
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: copeauxNumeriques,
-      },
-    },
-    {
-      type: 'Feature',
-      properties: {
-        name: 'ISD Flaubert',
-        description: 'Centre de formation',
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: ISDFlaubert,
-      },
-    },
-  ],
-};
 
 var vectorSource = new VectorSource({
   features: new GeoJSON().readFeatures(geojsonObject),
@@ -170,12 +115,6 @@ map.on('pointermove', event => {
   });
 });
 
-/**
- * Popup
- */
-var container = document.getElementById('popup');
-var content = document.getElementById('popup-content');
-var closer = document.getElementById('popup-closer');
 var clicked = null;
 
 /**
@@ -188,20 +127,21 @@ map.on('singleclick', event => {
 
   map.forEachFeatureAtPixel(event.pixel, feature => {
     clicked = feature;
-    content.innerHTML = clicked.get('description');
-    container.style.display = 'block';
-    container.style.top = event.pointerEvent.clientY - 80 + 'px';
-    container.style.left = event.pointerEvent.clientX - 50 + 'px';
     return true;
   });
+
+  if (clicked) {
+    content.innerHTML = clicked.get('description');
+    overlay.setPosition(event.coordinate);
+  }
 });
 
 /**
  * Évènement pour cacher la popup
  * @return {boolean} Don't follow the href.
  */
-closer.onclick = function() {
+closer.onclick = () => {
   overlay.setPosition(undefined);
-  container.style.display = 'none';
+  closer.blur();
   return false;
 };
