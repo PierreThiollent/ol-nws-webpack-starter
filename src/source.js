@@ -1,6 +1,7 @@
 import './source.scss';
 import 'ol/ol.css';
 import Map from 'ol/Map';
+import Overlay from 'ol/Overlay';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
 import {
@@ -39,7 +40,10 @@ var styles = {
   }),
 };
 
-// Style au survol d'un marqueur
+/**
+ * Style au survol d'un marqueur
+ * @param feature
+ */
 var highlightStyle = feature =>
   new Style({
     text: new Text({
@@ -60,7 +64,9 @@ var highlightStyle = feature =>
 
 const styleFunction = feature => styles[feature.getGeometry().getType()];
 
-// GeoJSON Object
+/**
+ * GeoJSON Object
+ */
 var geojsonObject = {
   type: 'FeatureCollection',
   crs: {
@@ -74,6 +80,7 @@ var geojsonObject = {
       type: 'Feature',
       properties: {
         name: 'Normandie Web School',
+        description: 'La meilleure école du numérique',
       },
       geometry: {
         type: 'Point',
@@ -84,6 +91,7 @@ var geojsonObject = {
       type: 'Feature',
       properties: {
         name: 'Les copeaux numériques',
+        description: 'FabLab',
       },
       geometry: {
         type: 'Point',
@@ -94,6 +102,7 @@ var geojsonObject = {
       type: 'Feature',
       properties: {
         name: 'ISD Flaubert',
+        description: 'Centre de formation',
       },
       geometry: {
         type: 'Point',
@@ -112,6 +121,20 @@ var vectorLayer = new VectorLayer({
   style: styleFunction,
 });
 
+/**
+ * Overlay to anchor the popup to the map.
+ */
+var overlay = new Overlay({
+  element: container,
+  autoPan: true,
+  autoPanAnimation: {
+    duration: 250,
+  },
+});
+
+/**
+ * Création de la map
+ */
 var map = new Map({
   interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
   layers: [
@@ -120,6 +143,7 @@ var map = new Map({
     }),
     vectorLayer,
   ],
+  overlays: [overlay],
   target: 'carteNWS',
   view: new View({
     center: nws,
@@ -127,7 +151,9 @@ var map = new Map({
   }),
 });
 
-// Marqueur survolé
+/**
+ * Marqueur survolé
+ */
 var selected = null;
 var status = document.getElementById('status');
 
@@ -141,6 +167,41 @@ map.on('pointermove', event => {
   map.forEachFeatureAtPixel(event.pixel, feature => {
     selected = feature;
     feature.setStyle(highlightStyle(feature));
+  });
+});
+
+/**
+ * Popup
+ */
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+var clicked = null;
+
+/**
+ * Évènement au clic sur un marqueur
+ */
+map.on('singleclick', event => {
+  if (clicked !== null) {
+    clicked = null;
+  }
+
+  map.forEachFeatureAtPixel(event.pixel, feature => {
+    clicked = feature;
+    content.innerHTML = clicked.get('description');
+    container.style.display = 'block';
+    container.style.top = event.pointerEvent.clientY - 80 + 'px';
+    container.style.left = event.pointerEvent.clientX - 50 + 'px';
     return true;
   });
 });
+
+/**
+ * Évènement pour cacher la popup
+ * @return {boolean} Don't follow the href.
+ */
+closer.onclick = function() {
+  overlay.setPosition(undefined);
+  container.style.display = 'none';
+  return false;
+};
