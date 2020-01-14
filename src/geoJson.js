@@ -1,5 +1,8 @@
 import {transform} from 'ol/proj';
 
+const source = 'EPSG:4326';
+const destination = 'EPSG:3857';
+
 /**
  * GeoJSON Object
  */
@@ -8,7 +11,7 @@ export const geojsonObject = {
   crs: {
     type: 'name',
     properties: {
-      name: 'EPSG:3857',
+      name: destination,
     },
   },
   features: [
@@ -17,32 +20,47 @@ export const geojsonObject = {
       properties: {
         name: 'Normandie Web School',
         description: 'La meilleure école du numérique',
+        adresse: '72 Rue de la République, 76140 Le Petit-Quevilly',
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.06653, 49.42847], 'EPSG:4326', 'EPSG:3857'),
+        coordinates: transform([1.06653, 49.42847], source, destination),
       },
     },
     {
       type: 'Feature',
       properties: {
-        name: 'Les copeaux numériques',
-        description: 'FabLab',
+        name: 'Digit',
+        description: 'Agence de développement',
+        adresse: '72 Rue de la République, 76140 Le Petit-Quevilly',
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.06467, 49.42222], 'EPSG:4326', 'EPSG:3857'),
+        coordinates: transform([1.065818, 49.429407], source, destination),
       },
     },
     {
       type: 'Feature',
       properties: {
-        name: 'ISD Flaubert',
-        description: 'Centre de formation',
+        name: 'Siqual',
+        description: 'Agence de développement sur mesure',
+        adresse: '64 Boulevard Stanislas Girardin, 76140 Le Petit-Quevilly',
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.12029, 49.45093], 'EPSG:4326', 'EPSG:3857'),
+        coordinates: transform([1.061695, 49.415935], source, destination),
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        name: 'Le Plus du Web',
+        description: 'Agence de développement web',
+        adresse: '220 Allée Robert Lemasson, 76230 Bois-Guillaume',
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: transform([1.111293, 49.474323], source, destination),
       },
     },
   ],
