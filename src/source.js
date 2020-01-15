@@ -152,7 +152,7 @@ map.on('singleclick', event => {
  * Évènement pour cacher la popup
  * @return {boolean} Don't follow the href.
  */
-if (closer) {
+if (window.location.href.indexOf() === '/') {
   closer.onclick = () => {
     overlay.setPosition(undefined);
     closer.blur();
@@ -163,30 +163,59 @@ if (closer) {
 /**
  * Insertin d'un marqueur en base de données
  */
-let formMarker = document.getElementById('add-marker');
-formMarker.addEventListener('submit', e => {
-  e.preventDefault();
-  let form = new FormData(formMarker);
-  fetch('http://localhost:8080/features', {
-    method: 'POST',
-    body: form,
-    header: {
-      'Content-type': 'application/json',
-    },
-  })
-    .then(response => {
-      alert('Marqueur ajouté ! 👍🏻💪🏻');
-      console.log(response);
+if (window.location.href.indexOf() === 'addMarker') {
+  let formMarker = document.getElementById('add-marker');
+  formMarker.addEventListener('submit', e => {
+    e.preventDefault();
+    let form = new FormData(formMarker);
+    fetch('http://localhost:8080/features', {
+      method: 'POST',
+      body: form,
     })
-    .catch(error => alert(error));
-});
+      .then(response => {
+        alert('Marqueur ajouté ! 👍🏻💪🏻');
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+        alert("Une erreur s'est produite.");
+      });
+  });
+}
+
+if (window.location.href.indexOf() === '/') {
+  document.querySelector('.get-coordinates').addEventListener('click', () => {
+    let adresse = document.getElementById('adresse').value;
+    !adresse && alert('Veuillez renseigner une adresse');
+
+    let xmlhttp = new XMLHttpRequest(),
+      url =
+        'https://nominatim.openstreetmap.org/search?format=json&limit=3&q=' +
+        adresse;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = () => {
+      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        if (xmlhttp.responseText !== '[]') {
+          let coordinates = JSON.parse(xmlhttp.responseText)[0];
+          document.getElementById('latitude').value = coordinates['lat'];
+          document.getElementById('longitude').value = coordinates['lon'];
+        } else {
+          alert(
+            "Nous n'avons pas pu récupérer la longitude et la latitude, veuillez réessayer.",
+          );
+        }
+      }
+    };
+    xmlhttp.send();
+  });
+}
 
 /**
  * Récupération du GéoJson
  */
-// fetch('http://localhost:8080/features', {
-//   method: 'GET',
-// })
-//   .then(response => response.json())
-//   .then(data => console.log(data))
-//   .catch(e => alert(e));
+fetch('http://localhost:8080/features', {
+  method: 'GET',
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(e => alert(e));
