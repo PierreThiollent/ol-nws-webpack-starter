@@ -1,7 +1,7 @@
 import {transform} from 'ol/proj';
 
-const source = 'EPSG:4326';
-const destination = 'EPSG:3857';
+const SOURCE = 'EPSG:4326';
+const DESTINATION = 'EPSG:3857';
 
 /**
  * GeoJSON Object
@@ -11,7 +11,7 @@ export const geojsonObject = {
   crs: {
     type: 'name',
     properties: {
-      name: destination,
+      name: DESTINATION,
     },
   },
   features: [
@@ -24,7 +24,7 @@ export const geojsonObject = {
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.06653, 49.42847], source, destination),
+        coordinates: transform([1.06653, 49.42847], SOURCE, DESTINATION),
       },
     },
     {
@@ -36,7 +36,7 @@ export const geojsonObject = {
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.065818, 49.429407], source, destination),
+        coordinates: transform([1.065818, 49.429407], SOURCE, DESTINATION),
       },
     },
     {
@@ -48,7 +48,7 @@ export const geojsonObject = {
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.061695, 49.415935], source, destination),
+        coordinates: transform([1.061695, 49.415935], SOURCE, DESTINATION),
       },
     },
     {
@@ -60,7 +60,7 @@ export const geojsonObject = {
       },
       geometry: {
         type: 'Point',
-        coordinates: transform([1.111293, 49.474323], source, destination),
+        coordinates: transform([1.111293, 49.474323], SOURCE, DESTINATION),
       },
     },
   ],
