@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">
+        <img
+          src="https://normandie-web-school.fr/wp-content/uploads/2019/01/Logo_NWS_couleurs-e1550676972229.png"
+          width="200px"
+          alt=""
+        />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">
+              Map
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./addMarker.html">Add marker</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <h1 class="title">Add new marker</h1>
+    <!-- <form action="" id="marker-form">
+      <label for="name">Name :</label><br />
+      <input type="text" name="name" /><br />
+
+      <label for="description">Description :</label><br />
+      <input type="text" name="description" /><br />
+
+      <label for="adresse">Adresse :</label><br />
+      <input type="text" name="adresse" /><br />
+
+      <label for="latitude">Latitude :</label><br />
+      <input type="text" name="latitude" /><br />
+
+      <label for="longitude">Longitude :</label><br />
+      <input type="text" name="longitude" /><br />
+
+      <label for="type">Type :</label><br />
+      <input type="text" name="type" /><br />
+
+      <input type="submit" value="Submit" class="submit" />
+    </form> -->
+    <div class="container-fluid">
+      <form id="add-marker">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            name="name"
+            placeholder="Le Plus du Web"
+          />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea
+            class="form-control"
+            id="description"
+            rows="3"
+            placeholder="Agence de développement web"
+            name="description"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="adresse">Adresse</label>
+          <input
+            type="text"
+            class="form-control"
+            id="adresse"
+            placeholder="220 Allée Robert Lemasson, 76230 Bois-Guillaume"
+            name="adresse"
+          />
+        </div>
+        <div class="get-coordinates d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-warning"
+            onclick="getCoordinates()"
+          >
+            Get coordinates
+          </button>
+        </div>
+        <div class="row">
+          <div class="col col-xs-12 form-group">
+            <label for="latitude">Latitude</label>
+            <input
+              type="text"
+              class="form-control"
+              id="latitude"
+              name="latitude"
+            />
+          </div>
+          <div class="col col-xs-12 form-group">
+            <label for="longitude">Longitude</label>
+            <input
+              type="text"
+              class="form-control"
+              id="longitude"
+              name="longitude"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="type">Type</label>
+          <input type="text" class="form-control" id="type" name="type" />
+        </div>
+        <button type="submit" class="btn btn-success">
+          Submit
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const getCoordinates = () => {
+        let adresse = document.getElementById('adresse').value;
+        let xmlhttp = new XMLHttpRequest(),
+          method = 'GET',
+          url =
+            'https://nominatim.openstreetmap.org/search?format=json&limit=3&q=' +
+            adresse;
+        xmlhttp.open(method, url, true);
+        xmlhttp.onreadystatechange = () => {
+          if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            if (xmlhttp.responseText !== []) {
+              let coordinates = JSON.parse(xmlhttp.responseText)[0];
+              document.getElementById('latitude').value = coordinates['lat'];
+              document.getElementById('longitude').value = coordinates['lon'];
+            } else {
+              console.log(
+                "Nous n'avons pas pu récupérer la longitude et la latitude, veuillez réessayer.",
+              );
+            }
+          }
+        };
+        xmlhttp.send();
+      };
+    </script>
+  </body>
+</html>
