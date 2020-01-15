@@ -6,7 +6,38 @@
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
   </head>
   <body>
-    <h1>Carte centrée sur la Normandie Web School</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">
+        <img
+          src="https://normandie-web-school.fr/wp-content/uploads/2019/01/Logo_NWS_couleurs-e1550676972229.png"
+          width="200px"
+          alt=""
+        />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">
+              Map
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./addMarker.html">Add marker</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div id="carteNWS" class="map"></div>
     <div id="popup" class="ol-popup">
       <a href="#" id="popup-closer" class="ol-popup-closer"></a>
