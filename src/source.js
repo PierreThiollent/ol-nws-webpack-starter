@@ -2,6 +2,7 @@ import './source.scss';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import {geojsonObject} from './geoJson';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Overlay from 'ol/Overlay';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
@@ -26,17 +27,16 @@ var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 
-// On definit la forme du marqueur
-var image = new CircleStyle({
-  radius: 5,
-  fill: null,
-  stroke: new Stroke({color: 'red', width: 10}),
-});
-
-// Style du marqueur
+/**
+ * Style des marqueur
+ */
 var styles = {
   Point: new Style({
-    image: image,
+    image: new CircleStyle({
+      radius: 5,
+      fill: null,
+      stroke: new Stroke({color: 'red', width: 10}),
+    }),
   }),
 };
 
@@ -53,7 +53,6 @@ var highlightStyle = feature =>
     }),
     image: new CircleStyle({
       radius: 5,
-      text: 'toto',
       fill: null,
       stroke: new Stroke({
         color: 'green',
@@ -62,6 +61,7 @@ var highlightStyle = feature =>
     }),
   });
 
+// Forme du marqueur
 const styleFunction = feature => styles[feature.getGeometry().getType()];
 
 var vectorSource = new VectorSource({
@@ -138,7 +138,12 @@ map.on('singleclick', event => {
   });
 
   if (clicked) {
-    content.innerHTML = clicked.get('description');
+    content.innerHTML =
+      clicked.get('name') +
+      '<br>' +
+      clicked.get('description') +
+      '<br> 📍' +
+      clicked.get('adresse');
     overlay.setPosition(event.coordinate);
   }
 });
@@ -147,8 +152,41 @@ map.on('singleclick', event => {
  * Évènement pour cacher la popup
  * @return {boolean} Don't follow the href.
  */
-closer.onclick = () => {
-  overlay.setPosition(undefined);
-  closer.blur();
-  return false;
-};
+if (closer) {
+  closer.onclick = () => {
+    overlay.setPosition(undefined);
+    closer.blur();
+    return false;
+  };
+}
+
+/**
+ * Insertin d'un marqueur en base de données
+ */
+let formMarker = document.getElementById('add-marker');
+formMarker.addEventListener('submit', e => {
+  e.preventDefault();
+  let form = new FormData(formMarker);
+  fetch('http://localhost:8080/features', {
+    method: 'POST',
+    body: form,
+    header: {
+      'Content-type': 'application/json',
+    },
+  })
+    .then(response => {
+      alert('Marqueur ajouté ! 👍🏻💪🏻');
+      console.log(response);
+    })
+    .catch(error => alert(error));
+});
+
+/**
+ * Récupération du GéoJson
+ */
+// fetch('http://localhost:8080/features', {
+//   method: 'GET',
+// })
+//   .then(response => response.json())
+//   .then(data => console.log(data))
+//   .catch(e => alert(e));
