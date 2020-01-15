@@ -3,8 +3,9 @@ body {
 }
 
 .map {
-  width: 100%;
-  height: 800px;
+  width: 900px;
+  height: 600px;
+  margin: 80px auto;
 }
 
 .ol-popup {
@@ -54,4 +55,14 @@ body {
 
 .ol-popup-closer:after {
   content: '✖';
+}
+
+h1.title {
+  text-align: center;
+  margin: 30px auto;
+}
+
+form {
+  width: 50%;
+  margin: auto;
 }
