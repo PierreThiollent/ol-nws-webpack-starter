@@ -1,21 +1,20 @@
 import './source.scss';
 import 'ol/ol.css';
 import Map from 'ol/Map';
-import {geojsonObject} from './geoJson';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Overlay from 'ol/Overlay';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
-import {
-  defaults as defaultInteractions,
-  DragRotateAndZoom,
-} from 'ol/interaction';
+import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction';
 import {transform} from 'ol/proj';
 import Circle from 'ol/geom/Circle';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 import {OSM, Vector as VectorSource} from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
+import {geojsonObject} from './geoJsonService';
 import {Circle as CircleStyle, Fill, Stroke, Style, Text} from 'ol/style';
+
+// const geoJsonObj = getGeoJson();
 
 // Coordonnées NWS
 var nws = transform([1.06653, 49.42847], 'EPSG:4326', 'EPSG:3857');
@@ -138,12 +137,7 @@ map.on('singleclick', event => {
   });
 
   if (clicked) {
-    content.innerHTML =
-      clicked.get('name') +
-      '<br>' +
-      clicked.get('description') +
-      '<br> 📍' +
-      clicked.get('adresse');
+    content.innerHTML = clicked.get('name') + '<br>' + clicked.get('description') + '<br> 📍' + clicked.get('adresse');
     overlay.setPosition(event.coordinate);
   }
 });
@@ -152,7 +146,7 @@ map.on('singleclick', event => {
  * Évènement pour cacher la popup
  * @return {boolean} Don't follow the href.
  */
-if (window.location.href.indexOf() === '/') {
+if (window.location.href.indexOf() !== '/addMarker.html') {
   closer.onclick = () => {
     overlay.setPosition(undefined);
     closer.blur();
@@ -161,9 +155,9 @@ if (window.location.href.indexOf() === '/') {
 }
 
 /**
- * Insertin d'un marqueur en base de données
+ * Insertion d'un marqueur en base de données
  */
-if (window.location.href.indexOf() === 'addMarker') {
+if (window.location.href.indexOf() === '/addMarker.html') {
   let formMarker = document.getElementById('add-marker');
   formMarker.addEventListener('submit', e => {
     e.preventDefault();
@@ -183,39 +177,31 @@ if (window.location.href.indexOf() === 'addMarker') {
   });
 }
 
-if (window.location.href.indexOf() === '/') {
-  document.querySelector('.get-coordinates').addEventListener('click', () => {
+/**
+ * Récupération des coordonnées par rapport à l'adresse
+ */
+if (window.location.href.indexOf() === '/addMarker.html') {
+  document.querySelector('.get-coordinates button').addEventListener('click', () => {
     let adresse = document.getElementById('adresse').value;
-    !adresse && alert('Veuillez renseigner une adresse');
-
-    let xmlhttp = new XMLHttpRequest(),
-      url =
-        'https://nominatim.openstreetmap.org/search?format=json&limit=3&q=' +
-        adresse;
-    xmlhttp.open('GET', url, true);
-    xmlhttp.onreadystatechange = () => {
-      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-        if (xmlhttp.responseText !== '[]') {
-          let coordinates = JSON.parse(xmlhttp.responseText)[0];
-          document.getElementById('latitude').value = coordinates['lat'];
-          document.getElementById('longitude').value = coordinates['lon'];
-        } else {
-          alert(
-            "Nous n'avons pas pu récupérer la longitude et la latitude, veuillez réessayer.",
-          );
+    if (adresse) {
+      let xmlhttp = new XMLHttpRequest(),
+        url = 'https://nominatim.openstreetmap.org/search?format=json&limit=3&q=' + adresse;
+      xmlhttp.open('GET', url, true);
+      xmlhttp.onreadystatechange = () => {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+          if (xmlhttp.responseText !== '[]') {
+            let coordinates = JSON.parse(xmlhttp.responseText)[0];
+            document.getElementById('latitude').value = coordinates['lat'];
+            document.getElementById('longitude').value = coordinates['lon'];
+            document.getElementById('adresse-manquante').style.display = 'none';
+          } else {
+            alert("Nous n'avons pas pu récupérer la longitude et la latitude, veuillez réessayer.");
+          }
         }
-      }
-    };
-    xmlhttp.send();
+      };
+      xmlhttp.send();
+    } else {
+      document.getElementById('adresse-manquante').style.display = 'block';
+    }
   });
 }
-
-/**
- * Récupération du GéoJson
- */
-fetch('http://localhost:8080/features', {
-  method: 'GET',
-})
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(e => alert(e));
