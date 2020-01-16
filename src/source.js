@@ -11,154 +11,154 @@ import Circle from 'ol/geom/Circle';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 import {OSM, Vector as VectorSource} from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
-import {geojsonObject} from './geoJsonService';
+import geoJsonService from './geoJsonService';
 import {Circle as CircleStyle, Fill, Stroke, Style, Text} from 'ol/style';
 
-// const geoJsonObj = getGeoJson();
+geoJsonService().then(geojsonObject => {
+  // Coordonnées NWS
+  var nws = transform([1.06653, 49.42847], 'EPSG:4326', 'EPSG:3857');
 
-// Coordonnées NWS
-var nws = transform([1.06653, 49.42847], 'EPSG:4326', 'EPSG:3857');
+  /**
+   * Popup
+   */
+  var container = document.getElementById('popup');
+  var content = document.getElementById('popup-content');
+  var closer = document.getElementById('popup-closer');
 
-/**
- * Popup
- */
-var container = document.getElementById('popup');
-var content = document.getElementById('popup-content');
-var closer = document.getElementById('popup-closer');
-
-/**
- * Style des marqueur
- */
-var styles = {
-  Point: new Style({
-    image: new CircleStyle({
-      radius: 5,
-      fill: null,
-      stroke: new Stroke({color: 'red', width: 10}),
-    }),
-  }),
-};
-
-/**
- * Style au survol d'un marqueur
- * @param feature
- */
-var highlightStyle = feature =>
-  new Style({
-    text: new Text({
-      text: selected.get('name'),
-      offsetY: -25,
-      scale: 1.5,
-    }),
-    image: new CircleStyle({
-      radius: 5,
-      fill: null,
-      stroke: new Stroke({
-        color: 'green',
-        width: 20,
+  /**
+   * Style des marqueur
+   */
+  var styles = {
+    Point: new Style({
+      image: new CircleStyle({
+        radius: 5,
+        fill: null,
+        stroke: new Stroke({color: 'red', width: 10}),
       }),
     }),
-  });
-
-// Forme du marqueur
-const styleFunction = feature => styles[feature.getGeometry().getType()];
-
-var vectorSource = new VectorSource({
-  features: new GeoJSON().readFeatures(geojsonObject),
-});
-
-var vectorLayer = new VectorLayer({
-  source: vectorSource,
-  style: styleFunction,
-});
-
-/**
- * Overlay to anchor the popup to the map.
- */
-var overlay = new Overlay({
-  element: container,
-  autoPan: true,
-  autoPanAnimation: {
-    duration: 250,
-  },
-});
-
-/**
- * Création de la map
- */
-var map = new Map({
-  interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
-  layers: [
-    new TileLayer({
-      source: new OSM(),
-    }),
-    vectorLayer,
-  ],
-  overlays: [overlay],
-  target: 'carteNWS',
-  view: new View({
-    center: nws,
-    zoom: 12,
-  }),
-});
-
-/**
- * Marqueur survolé
- */
-var selected = null;
-var status = document.getElementById('status');
-
-// Au survol d'un marqueur
-map.on('pointermove', event => {
-  if (selected !== null) {
-    selected.setStyle(undefined);
-    selected = null;
-  }
-
-  map.forEachFeatureAtPixel(event.pixel, feature => {
-    selected = feature;
-    feature.setStyle(highlightStyle(feature));
-  });
-});
-
-var clicked = null;
-
-/**
- * Évènement au clic sur un marqueur
- */
-map.on('singleclick', event => {
-  if (clicked !== null) {
-    clicked = null;
-  }
-
-  map.forEachFeatureAtPixel(event.pixel, feature => {
-    clicked = feature;
-    return true;
-  });
-
-  if (clicked) {
-    content.innerHTML = clicked.get('name') + '<br>' + clicked.get('description') + '<br> 📍' + clicked.get('adresse');
-    overlay.setPosition(event.coordinate);
-  }
-});
-
-/**
- * Évènement pour cacher la popup
- * @return {boolean} Don't follow the href.
- */
-if (window.location.href.indexOf() !== '/addMarker.html') {
-  closer.onclick = () => {
-    overlay.setPosition(undefined);
-    closer.blur();
-    return false;
   };
-}
+
+  /**
+   * Style au survol d'un marqueur
+   * @param feature
+   */
+  var highlightStyle = feature =>
+    new Style({
+      text: new Text({
+        text: selected.get('name'),
+        offsetY: -25,
+        scale: 1.5,
+      }),
+      image: new CircleStyle({
+        radius: 5,
+        fill: null,
+        stroke: new Stroke({
+          color: 'green',
+          width: 20,
+        }),
+      }),
+    });
+
+  // Forme du marqueur
+  const styleFunction = feature => styles[feature.getGeometry().getType()];
+
+  var vectorSource = new VectorSource({
+    features: new GeoJSON().readFeatures(geojsonObject),
+  });
+
+  var vectorLayer = new VectorLayer({
+    source: vectorSource,
+    style: styleFunction,
+  });
+
+  /**
+   * Overlay to anchor the popup to the map.
+   */
+  var overlay = new Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+      duration: 250,
+    },
+  });
+
+  /**
+   * Création de la map
+   */
+  var map = new Map({
+    interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
+    layers: [
+      new TileLayer({
+        source: new OSM(),
+      }),
+      vectorLayer,
+    ],
+    overlays: [overlay],
+    target: 'carteNWS',
+    view: new View({
+      center: nws,
+      zoom: 12,
+    }),
+  });
+
+  /**
+   * Marqueur survolé
+   */
+  var selected = null;
+  var status = document.getElementById('status');
+
+  // Au survol d'un marqueur
+  map.on('pointermove', event => {
+    if (selected !== null) {
+      selected.setStyle(undefined);
+      selected = null;
+    }
+
+    map.forEachFeatureAtPixel(event.pixel, feature => {
+      selected = feature;
+      feature.setStyle(highlightStyle(feature));
+    });
+  });
+
+  var clicked = null;
+
+  /**
+   * Évènement au clic sur un marqueur
+   */
+  map.on('singleclick', event => {
+    if (clicked !== null) {
+      clicked = null;
+    }
+
+    map.forEachFeatureAtPixel(event.pixel, feature => {
+      clicked = feature;
+      return true;
+    });
+
+    if (clicked) {
+      content.innerHTML = clicked.get('name') + '<br>' + clicked.get('description') + '<br> 📍' + clicked.get('adresse');
+      overlay.setPosition(event.coordinate);
+    }
+  });
+
+  /**
+   * Évènement pour cacher la popup
+   * @return {boolean} Don't follow the href.
+   */
+  if (closer) {
+    closer.onclick = () => {
+      overlay.setPosition(undefined);
+      closer.blur();
+      return false;
+    };
+  }
+});
 
 /**
  * Insertion d'un marqueur en base de données
  */
-if (window.location.href.indexOf() === '/addMarker.html') {
-  let formMarker = document.getElementById('add-marker');
+let formMarker = document.getElementById('add-marker');
+if (formMarker) {
   formMarker.addEventListener('submit', e => {
     e.preventDefault();
     let form = new FormData(formMarker);
@@ -180,8 +180,9 @@ if (window.location.href.indexOf() === '/addMarker.html') {
 /**
  * Récupération des coordonnées par rapport à l'adresse
  */
-if (window.location.href.indexOf() === '/addMarker.html') {
-  document.querySelector('.get-coordinates button').addEventListener('click', () => {
+let button = document.querySelector('.get-coordinates button');
+if (button) {
+  button.addEventListener('click', () => {
     let adresse = document.getElementById('adresse').value;
     if (adresse) {
       let xmlhttp = new XMLHttpRequest(),
