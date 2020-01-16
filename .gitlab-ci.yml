@@ -3,15 +3,14 @@ image: node:10.5.0
 stages:
   - build
   - test
-  - deploy
 
 before_script:
-  - npm run dev
+  - npm install
 
 build-min-code:
   stage: build
   script:
-    - npm install
+    - npm run dev
 
 run-unit-test:
   stage: test
