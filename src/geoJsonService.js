@@ -4,9 +4,15 @@ const SOURCE = 'EPSG:4326';
 const DESTINATION = 'EPSG:3857';
 
 /**
- * GeoJSON Object
+ * Récupération du GeoJson
  */
 export const geojsonObject = {
+  // fetch('http://localhost:8080/features', {
+  //   method: 'GET',
+  // })
+  //   .then(response => response.json())
+  //   .then(data => console.log(data))
+  //   .catch(e => alert(e));
   type: 'FeatureCollection',
   crs: {
     type: 'name',
@@ -65,3 +71,5 @@ export const geojsonObject = {
     },
   ],
 };
+
+// export default getGeoJson;
