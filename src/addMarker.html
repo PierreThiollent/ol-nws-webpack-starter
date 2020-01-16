@@ -8,21 +8,9 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/">
-        <img
-          src="https://normandie-web-school.fr/wp-content/uploads/2019/01/Logo_NWS_couleurs-e1550676972229.png"
-          width="200px"
-          alt=""
-        />
+        <img src="https://normandie-web-school.fr/wp-content/uploads/2019/01/Logo_NWS_couleurs-e1550676972229.png" width="200px" alt="" />
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
@@ -43,69 +31,38 @@
       <form id="add-marker">
         <div class="form-group">
           <label for="name">Name *</label>
-          <input
-            type="text"
-            class="form-control"
-            id="name"
-            name="name"
-            placeholder="Le Plus du Web"
-          />
+          <input type="text" class="form-control" id="name" name="name" placeholder="Le Plus du Web" />
         </div>
         <div class="form-group">
-          <label for="description">Description *</label>
-          <textarea
-            class="form-control"
-            id="description"
-            rows="3"
-            placeholder="Agence de développement web"
-            name="description"
-          ></textarea>
+          <label for="description">Description</label>
+          <textarea class="form-control" id="description" rows="3" placeholder="Agence de développement web" name="description"></textarea>
         </div>
         <div class="form-group">
-          <label for="adresse">Adresse *</label>
-          <input
-            type="text"
-            class="form-control"
-            id="adresse"
-            placeholder="220 Allée Robert Lemasson, 76230 Bois-Guillaume"
-            name="adresse"
-          />
+          <label for="adresse">Address *</label>
+          <input type="text" class="form-control" id="adresse" placeholder="220 Allée Robert Lemasson, 76230 Bois-Guillaume" name="adresse" />
+          <small id="adresse-manquante" class="form-text text-danger">Please enter an address.</small>
         </div>
         <div class="get-coordinates d-flex justify-content-end">
-          <button
-            type="button"
-            class="btn btn-warning"
-            onclick="getCoordinates()"
-          >
+          <button type="button" class="btn btn-warning">
             Get coordinates
           </button>
         </div>
         <div class="row">
           <div class="col col-xs-12 form-group">
             <label for="latitude">Latitude *</label>
-            <input
-              type="text"
-              class="form-control"
-              id="latitude"
-              name="latitude"
-            />
+            <input type="text" class="form-control" id="latitude" name="latitude" />
           </div>
           <div class="col col-xs-12 form-group">
             <label for="longitude">Longitude *</label>
-            <input
-              type="text"
-              class="form-control"
-              id="longitude"
-              name="longitude"
-            />
+            <input type="text" class="form-control" id="longitude" name="longitude" />
           </div>
         </div>
         <div class="form-group">
           <label for="type">Type *</label>
           <input type="text" class="form-control" id="type" name="type" />
-          <small id="input-empty" class="form-text text-danger"
+          <!-- <small id="input-empty" class="form-text text-danger"
             >Please fill all the inputs.</small
-          >
+          > -->
         </div>
         <button type="submit" class="btn btn-success">
           Submit

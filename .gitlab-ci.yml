@@ -1,0 +1,32 @@
+image: node:10.5.0
+
+stages:
+  - build
+  - test
+  - deploy
+
+before_script:
+  - npm install
+
+build:
+  stage: build
+  script:
+    - npm run dev
+
+test:
+  stage: test
+  script:
+    - npm run test
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+    url: https://dazzling-brahmagupta-2c31a2.netlify.com/
+  only:
+    - master
+  script:
+    - npm i
+    # build command
+    - npm run build
+    - npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod
